@@ -4,38 +4,92 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building the code...'
+                sh 'mvn clean install'
             }
         }
         stage('Unit and Integration Tests') {
             steps {
-                echo 'Running unit tests...'
-                echo 'Running integration tests...'
+                sh 'mvn test'
+                sh 'mvn integration-test'
+            }
+            post {
+                success {
+                    emailext (
+                        to: 'pramadaravipati7@gmail.com',
+                        subject: 'Unit and Integration Tests Passed',
+                        body: 'Unit and integration tests passed successfully. See attached build log for details.',
+                        attachLog: true
+                    )
+                }
+                failure {
+                    emailext (
+                        to: 'pramadaravipati7@gmail.com',
+                        subject: 'Unit and Integration Tests Failed',
+                        body: 'Unit and integration tests failed. See attached build log for details.',
+                        attachLog: true
+                    )
+                }
             }
         }
         stage('Code Analysis') {
             steps {
-                echo 'Performing code analysis...'
+                // Use SonarQube scanner to analyze code
+            }
+            post {
+                success {
+                    emailext (
+                        to: 'pramadaravipati7@gmail.com',
+                        subject: 'Code Analysis Passed',
+                        body: 'Code analysis passed successfully. See attached build log for details.',
+                        attachLog: true
+                    )
+                }
+                failure {
+                    emailext (
+                        to: 'pramadaravipati7@gmail.com',
+                        subject: 'Code Analysis Failed',
+                        body: 'Code analysis failed. See attached build log for details.',
+                        attachLog: true
+                    )
+                }
             }
         }
         stage('Security Scan') {
             steps {
-                echo 'Performing security scan...'
+                // Use OWASP ZAP to perform security scan
+            }
+            post {
+                success {
+                    emailext (
+                        to: 'pramadaravipati7@gmail.com',
+                        subject: 'Security Scan Passed',
+                        body: 'Security scan passed successfully. See attached build log for details.',
+                        attachLog: true
+                    )
+                }
+                failure {
+                    emailext (
+                        to: 'pramadaravipati7@gmail.com',
+                        subject: 'Security Scan Failed',
+                        body: 'Security scan failed. See attached build log for details.',
+                        attachLog: true
+                    )
+                }
             }
         }
         stage('Deploy to Staging') {
             steps {
-                echo 'Deploying to staging environment...'
+                // Use AWS CLI or Jenkins AWS plugin to deploy
             }
         }
         stage('Integration Tests on Staging') {
             steps {
-                echo 'Running integration tests on staging environment...'
+                // Use Selenium for integration tests
             }
         }
         stage('Deploy to Production') {
             steps {
-                echo 'Deploying to production environment...'
+                // Use AWS CLI or Jenkins AWS plugin to deploy
             }
         }
     }
